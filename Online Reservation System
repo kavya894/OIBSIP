@@ -1,0 +1,115 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class User {
+    String userId;
+    String password;
+
+    User(String userId, String password) {
+        this.userId = userId;
+        this.password = password;
+    }
+}
+
+class Reservation {
+    String trainNumber;
+    String trainName;
+    String classType;
+    String dateOfJourney;
+    String from;
+    String to;
+
+    Reservation(String trainNumber, String trainName, String classType, String dateOfJourney, String from, String to) {
+        this.trainNumber = trainNumber;
+        this.trainName = trainName;
+        this.classType = classType;
+        this.dateOfJourney = dateOfJourney;
+        this.from = from;
+        this.to = to;
+    }
+}
+
+class ReservationSystem {
+    private List<Reservation> reservations = new ArrayList<>();
+
+    void makeReservation(Reservation reservation) {
+        reservations.add(reservation);
+        // Logic to save reservation in the database goes here
+        System.out.println("Reservation successful!");
+    }
+
+    void cancelReservation(String pnrNumber) {
+        // Logic to find and cancel reservation in the database goes here
+        System.out.println("Cancellation successful!");
+    }
+}
+
+public class OnlineReservationSystem {
+    private static List<User> users = new ArrayList<>();
+    private static User currentUser;
+    private static ReservationSystem reservationSystem = new ReservationSystem();
+
+    public static void main(String[] args) {
+        initializeUsers();
+
+        Scanner scanner = new Scanner(System.in);
+
+        // Module: Login Form
+        System.out.println("Enter your login id:");
+        String userId = scanner.nextLine();
+        System.out.println("Enter your password:");
+        String password = scanner.nextLine();
+
+        loginUser(userId, password);
+
+        if (currentUser != null) {
+            // Module: Reservation System
+            System.out.println("Welcome to the Reservation System, " + currentUser.userId + "!");
+            System.out.println("Enter your details for reservation:");
+            Reservation reservation = captureReservationDetails();
+            reservationSystem.makeReservation(reservation);
+
+            // Module: Cancellation Form
+            System.out.println("Enter your PNR number for cancellation:");
+            String pnrNumber = scanner.nextLine();
+            reservationSystem.cancelReservation(pnrNumber);
+        }
+
+        scanner.close();
+    }
+
+    private static void initializeUsers() {
+        // In a real system, you would fetch users from a database
+        users.add(new User("user1", "pass1"));
+        users.add(new User("user2", "pass2"));
+    }
+
+    private static void loginUser(String userId, String password) {
+        for (User user : users) {
+            if (user.userId.equals(userId) && user.password.equals(password)) {
+                currentUser = user;
+                return;
+            }
+        }
+        System.out.println("Invalid credentials. Exiting...");
+    }
+
+    private static Reservation captureReservationDetails() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter train number:");
+        String trainNumber = scanner.nextLine();
+        System.out.println("Enter train name:");
+        String trainName = scanner.nextLine();
+        System.out.println("Enter class type:");
+        String classType = scanner.nextLine();
+        System.out.println("Enter date of journey:");
+        String dateOfJourney = scanner.nextLine();
+        System.out.println("Enter source station:");
+        String from = scanner.nextLine();
+        System.out.println("Enter destination station:");
+        String to = scanner.nextLine();
+
+        return new Reservation(trainNumber, trainName, classType, dateOfJourney, from, to);
+    }
+}
